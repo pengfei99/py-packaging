@@ -1,13 +1,15 @@
 import sys
-from pathlib import Path
-from catcher import *
+from stock_catcher.catcher import *
+
+print("Executing __main__.py")
 
 def main():
     """Read the stock file and run the stock catcher."""
 
-    # If a stock symbol file path is given, then use give file path
+    # If user provides a file, then use the given file path
     if len(sys.argv) > 1:
         stock_file_path = Path(sys.argv[1])
+    # if nothing provided, use the default file path
     else:
         stock_file_path = get_default_cac_file_path()
     try:

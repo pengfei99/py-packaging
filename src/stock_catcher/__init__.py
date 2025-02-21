@@ -1,6 +1,8 @@
 # Standard library imports
 from importlib import resources
 
+print("Executing __init__.py")
+
 try:
     import tomllib
 except ModuleNotFoundError:
