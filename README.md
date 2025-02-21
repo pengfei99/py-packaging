@@ -107,4 +107,91 @@ LICENSE: Defines the package’s license.
 
 Now we will use a real world project to simulate how to build a python package.
 
-### 2.1 Configur
+### 2.1 Configuration
+
+You can find the `config.toml` in `src/stock_catcher`. We store the file name which contains 
+the French CAC 40 stock ticker.
+
+```toml
+[stock]
+cac_40="CAC40_2024.csv"
+```
+TOML is a configuration file format that has gained popularity lately. Python uses it for the pyproject.toml file that 
+you’ll learn about later. To dive deeper into TOML, check out this [tutorial](https://realpython.com/python-toml/#read-toml-documents-with-tomli-and-tomllib).
+`tomllib` library has been added to python standard library since python 3.11. So you should be able to read `toml`
+easily in python.
+
+TOML files contain `key-value pairs` separated into sections, or tables. Our config file contains only one 
+section, `stock`, with one key, `cac_40`.
+
+
+### 2.2 __init__.py
+
+The `__init__.py` file represents the root of your package. It is executed `when the package is imported for the first 
+time in a Python session.`
+
+It should usually be kept quite simple, but it’s a good place to put package constants, documentation, and so on.
+
+In our example, we use `importlib.resources` to get the path of `config.toml` based on the package. This is especially 
+helpful when you publish your package to PyPI and don’t have full control over where your package is installed and 
+how it’s used. Resource files might even end up inside zip archives.
+
+```python
+
+# Standard library imports
+from importlib import resources
+
+print("Executing __init__.py")
+
+# Using try except ensures that you use tomllib if it’s available and that you fall back to tomli if it’s not.
+try:
+    import tomllib
+except ModuleNotFoundError:
+    # Third party imports
+    import tomli as tomllib
+
+
+# Version of the package
+# Specifying __version__ is `strictly speaking` not necessary
+# The importlib.metadata machinery uses project metadata to find version numbers. 
+__version__ = "0.0.1"
+# However, it’s still a useful convention to follow, and tools like Setuptools and Flit can use it to automatically
+
+
+# Read the CAC40 stock ticker file path from the config file of package stock-catcher
+_cfg = tomllib.loads(resources.read_text("stock_catcher", "config.toml"))
+
+CAC40 = _cfg["stock"]["cac_40"]
+```
+
+
+### 2.3 __main__.py
+
+The `__main__.py` is a special file inside a Python package that makes the `package executable using python -m package_name`.
+
+Unlike `__init__.py`, it will not be executed during import. It will be only executed when `python -m my_package`
+(run package as a script) is called
+
+### 2.4 catcher.py
+
+This module contains some functions which can get stock information and filter them based on certain user defined 
+condition.
+
+The below import is interesting. Because it will not work b default, because `stock_catcher` package is not recognized
+in the current python env.
+
+```python
+from stock_catcher import CAC40
+```
+
+To install the `stock_catcher` package in current python virtual env. you can use the below command
+
+```shell
+# install the package in editable mode, any change will be updated into the python virtual env
+pip install -e /path/to/package
+
+# in our case
+pip install -e /home/pliu/git/py-packaging/src/stock_catcher
+```
+
+> To do the pip install, it requires you to have a valid pyproject.toml.
