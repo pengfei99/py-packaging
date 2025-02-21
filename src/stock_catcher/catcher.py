@@ -2,7 +2,7 @@ from typing import List
 import pandas as pd
 import yfinance as yf
 from pathlib import Path
-
+from stock import CAC40
 
 def get_stock_infos(stock_tickers:List[str],add_postfix:bool=False)->pd.DataFrame:
     """
@@ -71,3 +71,7 @@ def get_fr_stock_tickers(stock_source_path:Path)->List:
     else:
         raise FileNotFoundError("The provided stock_source_path does not exist")
     return stock_tickers
+
+def get_default_cac_file_path(cac_file_name:str = CAC40)->Path:
+    default_stock_file = Path().cwd().parent / Path(f"data/{cac_file_name}")
+    return default_stock_file

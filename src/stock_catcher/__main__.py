@@ -4,12 +4,12 @@ from catcher import *
 
 def main():
     """Read the stock file and run the stock catcher."""
-    default_stock_file = Path().cwd().parent / Path("data/CAC40_2024.csv")
+
     # If a stock symbol file path is given, then use give file path
     if len(sys.argv) > 1:
         stock_file_path = Path(sys.argv[1])
     else:
-        stock_file_path = default_stock_file
+        stock_file_path = get_default_cac_file_path()
     try:
         stock_tickers = get_fr_stock_tickers(stock_file_path)
         stock_info_pdf = get_stock_infos(stock_tickers)

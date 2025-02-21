@@ -102,5 +102,9 @@ LICENSE: Defines the package’s license.
 .gitignore: Specifies files to exclude from version control.
 
 
-## 2. 
+## 2. A real world example
 
+
+Now we will use a real world project to simulate how to build a python package.
+
+### 2.1 Configur
