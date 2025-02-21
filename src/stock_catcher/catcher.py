@@ -2,7 +2,7 @@ from typing import List
 import pandas as pd
 import yfinance as yf
 from pathlib import Path
-from stock import CAC40
+from stock_catcher import CAC40
 
 def get_stock_infos(stock_tickers:List[str],add_postfix:bool=False)->pd.DataFrame:
     """
