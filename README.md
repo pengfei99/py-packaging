@@ -192,6 +192,84 @@ pip install -e /path/to/package
 
 # in our case
 pip install -e /home/pliu/git/py-packaging/src/stock_catcher
+
+# or you can go the folder, and call the command on current folder
+cd /home/pliu/git/py-packaging
+ python -m pip install -e .
 ```
 
 > To do the pip install, it requires you to have a valid pyproject.toml.
+> 
+## 3. How to use a package
+
+The most common way to call a python module in a package is call the python file of the module.
+Below is an example
+```shell
+# if the module contains a main method, the main method will be called
+python cacher.py
+
+```
+
+You can also use the -m option, it runs a script by specifying its module name instead of the filename:
+
+```shell
+# if the module contains a main method, the main method will be called
+python -m cacher
+```
+
+## 4. Prepare the package for publication
+
+### 4.1 Choose a catchy package name
+
+All packages on PyPI need to have **unique names**. There are now several hundred thousand packages on PyPI, so 
+chances are that your favorite name is already taken.
+
+We will try to use the name `stock_catcher`, if it's already be taken, then we will add some prefix. For example
+we can go `pf_stock_catcher`.
+
+> The package name will be used to install the package(pip install stock_catcher).
+
+**The PyPI package name does not need to match the package name**. For example, you can named the package as `stock_catcher`
+in PyPI, after installation, the package can be called `catcher` for import(import catcher). 
+
+The best practice is to keep them the same to avoid naming conflict. Because in one python environment, you cannot
+have two packages which have the same name.
+
+
+### 4.2 Configure a build system for your package
+
+A **build system** is responsible for creating the actual files that you’ll upload to PyPI, typically in the [wheel](https://realpython.com/python-wheels/) 
+or the [source distribution (sdist)](https://packaging.python.org/en/latest/specifications/source-distribution-format/) 
+format. For a long time, this was done by [distutils](https://docs.python.org/3.11/library/distutils.html) or 
+[setuptools](https://setuptools.pypa.io/). However, [PEP 517](https://peps.python.org/pep-0517/) and [PEP 518](https://peps.python.org/pep-0518/) 
+introduced a way to specify `custom build systems` (e.g. Poetry, flit).
+
+In this tutorial, we only show how to use **setuptools** as our `build system`. The main difference of these build systems
+is how you configure your package and build command to build and upload the package. 
+
+
+#### 4.2.1 The pyproject.toml
+
+The `pyproject.toml` file specify the build system of the package. You can specify setuptools by adding the following 
+lines to pyproject.toml:
+
+```toml
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+```
+
+The `minimal project information` that you must include in your `pyproject.toml` is the following:
+
+- **name**: specifies the name of your package as it will appear on PyPI.
+- **version**: sets the current version of your package.
+
+All other attributes are optional, but we recommend you to provide as much information as possible.
+
+- **classifiers**: describes your project using a list of classifiers. You should use these as they make your project more searchable.
+- **dependencies**: lists any dependencies your package has to third-party libraries. `stock_cacher` depends on pandas
+yfinance, and tomli.
+- **project.urls**: adds links that you can use to present additional information about your package to your users. 
+                  You can include several links here.
+- **project.scripts**: creates command-line scripts that call functions within your package. 
+          Here, the new realpython command calls main() within the reader.__main__ module.
