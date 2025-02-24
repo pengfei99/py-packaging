@@ -526,6 +526,9 @@ If you want to update a minor version, you can do the following
 # minor update
 bumpver update --minor
 
+# major update
+bumpver update --major
+
 # use --dry option to view what will be changed
 bumpver update --minor --dry
 ```
@@ -630,18 +633,42 @@ for your package. `Wheels are usually faster and more convenient for your end us
 a flexible backup alternative.
 
 ```shell
-# 
+# build the package
 python -m build
+
+## outupt example
+Successfully built stock_catcher-1.0.0.tar.gz and stock_catcher-1.0.0-py3-none-any.whl
+
 
 # check the build package with twine
 twine check dist/*
+
+# output example
+Checking dist/stock_catcher-1.0.0-py3-none-any.whl: PASSED
+Checking dist/stock_catcher-1.0.0.tar.gz: PASSED
+
 
 # upload to test pypi
 twine upload -r testpypi dist/*
  
 # upload to pypi
 twine upload dist/*
+
+# output example
+Uploading stock_catcher-1.0.0-py3-none-any.whl
+100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 32.6/32.6 kB • 00:00 • 13.4 MB/s
+Uploading stock_catcher-1.0.0.tar.gz
+100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 34.1/34.1 kB • 00:00 • 27.5 MB/s
+
+View at:
+https://pypi.org/project/stock-catcher/1.0.0/
+
 ```
+
+> The .whl is just a zip file, you can unzip it and check if it contains all the files that you need(e.g. data, conf, etc.
+specified in manifest.in).
+
+
 
 ## 6. Install your package via PyPI
 
@@ -655,3 +682,14 @@ and activate it. Then run the following command:
 (venv) $ pip install stock_catcher[dev]
 
 ```
+
+## 7. other Build system
+
+**Flit** is a great little project that aims to “make the easy things easy” when it comes to packaging (source). 
+`Flit doesn’t support advanced packages like those creating C extensions`, and in general, it doesn’t give you many 
+choices when setting up your package. Instead, Flit subscribes to the philosophy that there should be one obvious 
+workflow to publish a package.
+
+
+**Poetry** is another tool that you can use to build and upload your package. Compared to Flit, Poetry has more 
+features that can help you during the development of your packages, including powerful `dependency management`.
