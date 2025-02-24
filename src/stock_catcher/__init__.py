@@ -11,7 +11,7 @@ except ModuleNotFoundError:
 
 
 # Version of stock_catcher package
-__version__ = "0.2.0"
+__version__ = "1.0.0"
 
 # Read the CAC40 stock ticker file path from the config file of package stock-catcher
 _cfg = tomllib.loads(resources.read_text("stock_catcher", "config.toml"))
