@@ -1,7 +1,9 @@
+from importlib.abc import Traversable
 from typing import List
 import pandas as pd
 import yfinance as yf
 from pathlib import Path
+from importlib import resources
 from stock_catcher import CAC40
 
 def get_stock_infos(stock_tickers:List[str],add_postfix:bool=False)->pd.DataFrame:
@@ -72,6 +74,12 @@ def get_fr_stock_tickers(stock_source_path:Path)->List:
         raise FileNotFoundError("The provided stock_source_path does not exist")
     return stock_tickers
 
-def get_default_cac_file_path(cac_file_name:str = CAC40)->Path:
-    default_stock_file = Path().cwd().parent / Path(f"data/{cac_file_name}")
-    return default_stock_file
+def get_default_cac_file_path(cac_file_name:str = CAC40)-> Path:
+    """
+    This function returns the default CAC40 file path. As we use the importlib.resources module, we no longer need to
+    consider where this function will be called to get the correct default CAC40 file path. CAC40 is a package default
+    variable defined in __init__.py
+    :param cac_file_name:
+    :return:
+    """
+    return Path(str(resources.files("stock_catcher.data") / f"{cac_file_name}"))

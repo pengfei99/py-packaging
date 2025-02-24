@@ -16,4 +16,6 @@ __version__ = "0.0.1"
 # Read the CAC40 stock ticker file path from the config file of package stock-catcher
 _cfg = tomllib.loads(resources.read_text("stock_catcher", "config.toml"))
 
+
+
 CAC40 = _cfg["stock"]["cac_40"]
