@@ -1,44 +1,44 @@
 [build-system]
-requires      = ["setuptools>=61.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
+    requires      = ["setuptools>=61.0.0", "wheel"]
+    build-backend = "setuptools.build_meta"
 
 [project]
-name = "stock_catcher"
-version = "0.0.1"
-description = "Read the latest stock news"
-readme = "README.md"
-authors = [{ name = "Pengfei", email = "liu.pengfei@hotmail.fr" }]
-license = { file = "LICENSE" }
-classifiers = [
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-]
-keywords = ["cac40", "stock", "finance"]
-dependencies = ["pandas", "yfinance", 'tomli; python_version < "3.13"']
-requires-python = ">=3.9"
+    name = "stock_catcher"
+    version = "0.0.1"
+    description = "Read the latest stock news"
+    readme = "README.md"
+    authors = [{ name = "Pengfei", email = "liu.pengfei@hotmail.fr" }]
+    license = { file = "LICENSE" }
+    classifiers = [
+        "License :: OSI Approved :: Apache 2.0",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+    ]
+    keywords = ["cac40", "stock", "finance"]
+    dependencies = ["pandas", "yfinance", 'tomli; python_version < "3.13"']
+    requires-python = ">=3.9"
 
-    [project.optional-dependencies]
+[project.optional-dependencies]
     build = ["build", "twine"]
     dev   = ["black", "bumpver", "isort", "mypy", "pytest"]
 
-    [project.scripts]
+[project.scripts]
     realpython = "stock_catcher.__main__:main"
 
-    [project.urls]
+[project.urls]
     repository    = "https://github.com/pengfei99/py-packaging"
     documentation = "https://github.com/pengfei99/py-packaging"
 
 
 [tool.bumpver]
-current_version = "0.0.1"
-version_pattern = "MAJOR.MINOR.PATCH"
-commit_message  = "bump version {old_version} -> {new_version}"
-commit          = true
-tag             = true
-push            = false
+    current_version = "0.0.1"
+    version_pattern = "MAJOR.MINOR.PATCH"
+    commit_message  = "bump version {old_version} -> {new_version}"
+    commit          = true
+    tag             = true
+    push            = false
 
-    [tool.bumpver.file_patterns]
+[tool.bumpver.file_patterns]
     "pyproject.toml" = [
         'current_version = "{version}"',
         'version = "{version}"',
@@ -47,10 +47,10 @@ push            = false
     "src/stock_catcher/__main__.py" = ["- stocke_catcher v{version}"]
 
 [tool.isort]
-profile                   = "black"
-import_heading_stdlib     = "Standard library imports"
-import_heading_thirdparty = "Third party imports"
-import_heading_firstparty = "Reader imports"
+    profile                   = "black"
+    import_heading_stdlib     = "Standard library imports"
+    import_heading_thirdparty = "Third party imports"
+    import_heading_firstparty = "Reader imports"
 
 [tool.mypy]
 strict = true
