@@ -514,10 +514,144 @@ push            = false
         'version = "{version}"',
     ]
     "src/stock_catcher/__init__.py" = ["{version}"]
-    "src/stock_catcher/__main__.py" = ["- stocke_catcher v{version}"]
 ```
 
+This conf contains two important parts:
+- how the bumpver versioning the project, and interaction with git
+- all version specifications in the `pyproject.toml` and `project source code(__init__.py)`
+
 If you want to update a minor version, you can do the following
+
 ```shell
+# minor update
 bumpver update --minor
+
+# use --try option to view what will be changed
+bumpver update --minor
+```
+
+> Any error or warning during the run will stop bumpver to do the version update. 
+> You must keep the git working directory clean before you run the bumpver update
+> 
+> 
+### 4.6 Add Resource Files to Your Package
+
+Sometimes, you’ll have files inside your package that aren’t source code files(e.g. data files, binaries, documentation, 
+configuration files, etc).
+
+To make sure such files are included when your project is built, you use a manifest file. For many projects, you 
+don’t need to worry about the manifest: by default, Setuptools includes all source code files and README files in the build.
+
+For other file formats, you need to create a file named **MANIFEST.in** next to `pyproject.toml` in your project’s 
+base directory. This file specifies rules for which files to include and which files to exclude. 
+
+Below is an example, we include our toml, and csv in our project.
+
+```text
+# MANIFEST.in
+
+include src/stock_catcher/*.toml
+include src/stock_catcher/data/*.csv
+```
+
+For more details, you can visit [manifest doc](https://packaging.python.org/en/latest/guides/using-manifest-in/). The
+ [check-manifest](https://pypi.org/project/check-manifest/) tool can be useful when you have complicated manifest
+
+
+### 4.7 License Your Package
+
+If you’re sharing your package with others, then you need to add a license to your package that explains how 
+others are allowed to use your package. You should choose one of the [many licenses](https://choosealicense.com/appendix/) 
+already available.
+
+You should add a `file named LICENSE` to your project that contains the text of the license you choose. You can then 
+reference this file in `pyproject.toml` to make the license visible on PyPI.
+
+```toml
+license = { file = "LICENSE" }
+```
+
+### 4.8 Install Your Package Locally
+
+Normally, pip does a regular install, which places a package into your `site-packages/` folder. If you install your 
+local project, then the source code will be copied to site-packages/. The effect of this is that later changes that 
+you make won’t take effect. `You’ll need to reinstall your package first`.
+
+This is a way of using pip to install your package locally in a way that lets you edit your code after it’s installed.
+
+Editable installs have been formalized in `PEP 660`.
+
+```shell
+# go to the root dir of your package, in our case,
+cd /home/pliu/git/py-packaging
+
+# install the pacakge with -e or --editable flag
+pip install -e .
+```
+
+Once you’ve successfully installed your project, it’s available inside your environment, independent of your 
+current directory. Additionally, your scripts are set up so you can run them. Recall that `stock_catcher = "stock_catcher.__main__:main"`
+Now try to run 
+
+```shell
+(venv) $ stock_catcher
+```
+
+or in python shell
+
+```python
+from stock_catcher import catcher
+    
+catcher.get_default_cac_file_path()
+```
+
+As your package is installed as `editable`, you can modify the code and observe the output with the above command.
+
+## 5 Publish your package to PyPI
+
+If you don’t already have an account on PyPI, then now is the time to [register your account on PyPI](https://pypi.org/account/register/).
+For testing, you should also [register an account on TestPyPI](https://test.pypi.org/account/register/). 
+
+To build and upload your package to PyPI, you’ll use two tools called `Build and Twine`. 
+You can install them using pip as usual:
+
+```shell
+pip install build twine
+```
+
+### 5.1 Build your Package
+
+Packages on PyPI aren’t distributed as plain source code. Instead, they’re wrapped into distribution packages. 
+The most common formats for distribution packages are `source archives` and `Python wheels`.
+
+A source archive consists of your source code and any supporting files wrapped into one tar file.
+A wheel is essentially a `zip archive containing your code`. You should provide both source archives and wheels 
+for your package. `Wheels are usually faster and more convenient for your end users, while source archives provide 
+a flexible backup alternative.
+
+```shell
+# 
+python -m build
+
+# check the build package with twine
+twine check dist/*
+
+# upload to test pypi
+twine upload -r testpypi dist/*
+ 
+# upload to pypi
+twine upload dist/*
+```
+
+## 6. Install your package via PyPI
+
+Once after you publish the package in PyPI, you can install it with `pip`. First, create a new virtual environment 
+and activate it. Then run the following command:
+
+```shell
+(venv) $ pip install stock_catcher
+
+# you can also install the dev version with the optional dependencies
+(venv) $ pip install stock_catcher[dev]
+
 ```
