@@ -236,7 +236,19 @@ The best practice is to keep them the same to avoid naming conflict. Because in 
 have two packages which have the same name.
 
 
-### 4.2 Configure a build system for your package
+### 4.2 The pyproject.toml
+
+The `pyproject.toml` file is the most important file when you want to publish a python package. It specifies: 
+- the build system of the package.
+- the package metadata (e.g. version, description, licence, etc.)
+- the package dependencies
+- the entry points
+- the documentation location
+
+
+
+
+#### 4.2.1 Configure a build system for your package
 
 A **build system** is responsible for creating the actual files that you’ll upload to PyPI, typically in the [wheel](https://realpython.com/python-wheels/) 
 or the [source distribution (sdist)](https://packaging.python.org/en/latest/specifications/source-distribution-format/) 
@@ -247,17 +259,15 @@ introduced a way to specify `custom build systems` (e.g. Poetry, flit).
 In this tutorial, we only show how to use **setuptools** as our `build system`. The main difference of these build systems
 is how you configure your package and build command to build and upload the package. 
 
-
-#### 4.2.1 The pyproject.toml
-
-The `pyproject.toml` file specify the build system of the package. You can specify setuptools by adding the following 
-lines to pyproject.toml:
+You can specify setuptools by adding the following lines to pyproject.toml:
 
 ```toml
 [build-system]
 requires      = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 ```
+
+#### 4.2.2 Specify project metadata
 
 The `minimal project information` that you must include in your `pyproject.toml` is the following:
 
@@ -271,11 +281,15 @@ All other attributes are optional, but we recommend you to provide as much infor
 yfinance, and tomli.
 - **project.urls**: adds links that you can use to present additional information about your package to your users. 
                   You can include several links here.
+
+#### 4.2.3. Specify project entry point
 - **project.scripts**: creates command-line scripts that call functions within your package. 
           In our case, the stock_catcher command will call the main() within the `stock_catcher.__main__` module.
          
 There are three ways to config the entry point of a package:
-- **project.scripts**
+- **project.scripts**: specify application CLI entry point
 - **project.gui-scripts**: specify GUI applications entry point
 - **project.entry-points**: specify [plugins](https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/#using-package-metadata) entry point
+
+
 
