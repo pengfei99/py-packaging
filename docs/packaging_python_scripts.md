@@ -615,6 +615,20 @@ As your package is installed as `editable`, you can modify the code and observe 
 If you don’t already have an account on PyPI, then now is the time to [register your account on PyPI](https://pypi.org/account/register/).
 For testing, you should also [register an account on TestPyPI](https://test.pypi.org/account/register/). 
 
+Once you have registered your account, you should be able to generate a token which allows you to upload your package
+to PyPI.
+
+```shell
+# create a .pypirc in your home directory
+vim ~/.pypirc
+
+# put the below lines, and replace the pypi-token by your token
+[pypi]
+  username = __token__
+  password = pypi-token
+
+```
+
 To build and upload your package to PyPI, you’ll use two tools called `Build and Twine`. 
 You can install them using pip as usual:
 
