@@ -526,8 +526,8 @@ If you want to update a minor version, you can do the following
 # minor update
 bumpver update --minor
 
-# use --try option to view what will be changed
-bumpver update --minor
+# use --dry option to view what will be changed
+bumpver update --minor --dry
 ```
 
 > Any error or warning during the run will stop bumpver to do the version update. 
