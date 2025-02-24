@@ -259,13 +259,15 @@ introduced a way to specify `custom build systems` (e.g. Poetry, flit).
 In this tutorial, we only show how to use **setuptools** as our `build system`. The main difference of these build systems
 is how you configure your package and build command to build and upload the package. 
 
-You can specify setuptools by adding the following lines to pyproject.toml:
+You can specify `setuptools` as your build system by adding the following lines to `pyproject.toml`:
 
 ```toml
 [build-system]
 requires      = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 ```
+
+> You can notice the build-system specification stats with [build-system].
 
 #### 4.2.2 Specify project metadata
 
@@ -282,7 +284,118 @@ yfinance, and tomli.
 - **project.urls**: adds links that you can use to present additional information about your package to your users. 
                   You can include several links here.
 
+```toml
+[project]
+name = "stock_catcher"
+version = "0.0.1"
+description = "Read the latest stock news"
+readme = "README.md"
+authors = [{ name = "Pengfei", email = "liu.pengfei@hotmail.fr" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["cac40", "stock", "finance"]
+requires-python = ">=3.9"
+
+dependencies = ["pandas >= 2.2.0", 
+                 "yfinance", 
+                 'tomli; python_version < "3.13"']
+
+    [project.optional-dependencies]
+    build = ["build", "twine"]
+    dev = ["black", "bumpver", "isort", "mypy", "pytest"]
+
+    [project.scripts]
+    stock_catcher = "stock_catcher.__main__:main"
+
+    [project.urls]
+    repository    = "https://github.com/pengfei99/py-packaging"
+    documentation = "https://github.com/pengfei99/py-packaging/blob/main/docs/packaging_python_scripts.md"
+```
+
+> You can notice the project specification stats with [project]. It can have subsections [project.optional-dependencies],
+> [project.scripts], [project.urls]. The subsection name starts with <parent-section-name>.<sub-name>
+
+
+##### 4.2.2.1 Take care project dependencies
+
+You should list all `third-party libraries that aren’t part of the standard library` in the dependencies section. This
+ list will be used by pip to resolve dependencies any time your package is installed. So if one library is missing, your
+package will raise runtime error.
+
+In the below example, we show a few possibilities that you can use when specifying dependencies, including 
+- version specifiers: pandas >= 2.2.0 means pandas version must be 2.2.0 or later
+- environment markers: tomli; python_version < "3.13" means tomli can be any version, but is only required on 
+                     Python 3.10 or earlier You can also specify different operating systems with it.
+
+```toml
+dependencies = ["pandas >= 2.2.0", 
+                 "yfinance", 
+                 'tomli; python_version < "3.13"']
+```
+
+When adding packages to the dependency list, you should follow the below rules:
+
+- `Only list your direct dependencies`. For example, we use `pandas`, but pandas uses `numpy`, as we don't use `numpy` directly, so it’s not specified.
+- Never pin your dependencies to one particular version with ==.
+- Use >= to add a lower bound if you depend on functionality that was added in a particular version of your dependency.
+- Use < to add an upper bound if you worry that a dependency may break compatibility in a major version upgrade. 
+      In this case, you should diligently test such upgrades and remove or increase the upper bound if possible.
+
+Note that these rules hold when you’re configuring a package that you’re making available for others. 
+If `you’re deploying your package`, then you should `pin your dependencies inside a virtual environment`.
+
+
+
+##### 4.2.2.2 Use pip-tools
+
+The `pip-tools` project is a great way to manage `pinned dependencies`. It comes with a pip-compile command that 
+can `create or update a complete list of dependencies`.
+
+As an example, say that you’re deploying `stock_catcher` into a virtual environment. You can then create a 
+`reproducible environment with pip-tools`. In fact, pip-compile can work directly with your `pyproject.toml` file:
+
+```shell
+# install pip tools
+pip install pip-tools
+
+# build the requirements.txt with pip-tools 
+pip-compile pyproject.tom
+```
+
+##### 4.2.2.3 Handle optional dependencies
+
+We list all required dependencies to run the package in `dependencies`. For dev or build purpose, we may need
+more optional libraries. In our case, in `[project.optional-dependencies]`, we define two more environments:
+ - build: For build purpose, we need the below package
+         - build: A simple, correct Python build frontend.
+         - twine: is a utility for publishing Python packages on PyPI.  
+ - dev : For dev purpose, we need the below packages
+         - black : python source code formater, run `black {source_file_or_directory}`
+         - bumpver: With the CLI command bumpver, you can search for and update version strings in your project files.
+         - isort: sort imports alphabetically and automatically separate into sections and by type in a source file 
+         - mypy is a Python linter which can catch many programming errors by analyzing the code. 
+         - pytest for unit test
+
+```toml
+[project.optional-dependencies]
+    build = ["build", "twine"]
+    dev = ["black", "bumpver", "isort", "mypy", "pytest"]
+```
+
+By default, optional dependencies aren’t included when a package is installed. You can use the `--extra` option 
+when calling `pip-compile`:
+
+```shell
+# This creates a pinned requirements.txt file that includes both your regular and development dependencies.
+pip-compile --extra dev pyproject.toml
+```
+
 #### 4.2.3. Specify project entry point
+
 - **project.scripts**: creates command-line scripts that call functions within your package. 
           In our case, the stock_catcher command will call the main() within the `stock_catcher.__main__` module.
          
@@ -292,4 +405,119 @@ There are three ways to config the entry point of a package:
 - **project.entry-points**: specify [plugins](https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/#using-package-metadata) entry point
 
 
+In our case, we use `stock_catcher.__main__:main` the `main()` method of `__main__.py` in package `stock_catcher` as the
+script entry point of our application. In another word, when the package is installed, you run command `stock_catcher`,
+the `stock_catcher.__main__:main` will be exectued.
 
+```toml
+ [project.scripts]
+    stock_catcher = "stock_catcher.__main__:main"
+```
+
+### 4.3 Document your package
+
+At a minimum, you should include a README file with your project. A good README should quickly `describe 
+your project`, as well as `explain how to install and use` your package.
+
+In pyproject.toml, you can specify the location of your readme.
+
+```toml
+readme = "README.md"
+```
+
+The readme file should be in `Markdown` or [reStructuredText](http://docutils.sourceforge.net/rst.html) as formats 
+for project descriptions.  If you don’t need any of the advanced features of reStructuredText, then you’re usually 
+better off using Markdown for your README. It’s simpler and has wider support outside of PyPI.
+
+You can have more details in other repo, you can specify them in ` [project.urls]`. For example, in our case, we specify
+a git repo for source code, and a more detailed documentation.
+
+```toml
+    [project.urls]
+    repository    = "https://github.com/pengfei99/py-packaging"
+    documentation = "https://github.com/pengfei99/py-packaging/blob/main/docs/packaging_python_scripts.md"
+```
+
+### 4.4 Test your package
+
+Tests are useful when you’re developing your package, and you should include them. As noted, you won’t cover testing 
+in this tutorial, but you can have a look at the tests of reader in the tests/ source code directory.
+
+You can learn more about testing in [Effective Python Testing With Pytest](https://realpython.com/pytest-python-testing/), 
+and get some hands-on experience with test-driven development (TDD) in [Build a Hash Table in Python With TDD](https://realpython.com/python-hash-table/) 
+and [Python Practice Problems: Parsing CSV Files](https://realpython.com/python-interview-problem-parsing-csv-files/).
+
+When preparing your package for publication, you should be conscious of the role that tests play. They’re typically 
+only interesting for developers, so they should `not be included` in the package that you distribute through PyPI.
+
+Later versions of Setuptools are quite good at code discovery and will normally include your source code in the 
+package distribution but leave out your tests, documentation, and similar development artifacts.
+
+You can control exactly what’s included in your package by using find directives in pyproject.toml. 
+See the [Setuptools documentation](https://setuptools.pypa.io/en/latest/userguide/package_discovery.html#custom-discovery) 
+for more information.
+
+### 4.5 Versioning your package
+
+Your package needs to have a version. Furthermore, `PyPI will only let you upload a particular version of your package`. 
+In other words, if you want to update your package on PyPI, then you need to increase the version number first. 
+This is a good thing because it helps guarantee reproducibility: two environments with the same version of a given 
+package should behave the same.
+
+There are many different [versioning schemes](https://en.wikipedia.org/wiki/Software_versioning) that you can use. 
+For Python projects, [PEP 440](https://peps.python.org/pep-0440/) gives some recommendations. 
+However, to be flexible, the description in that PEP is complicated. 
+For a simple project, you should stick with a simple versioning scheme.
+
+#### 4.5.1 Semantic versioning scheme
+
+[Semantic versioning](https://semver.org/) is a good default scheme to use, although it’s not perfect. 
+You specify the version as three numerical components, for instance 1.2.3. The components are called **MAJOR, MINOR, and PATCH**
+respectively. The following are recommendations about when to increment each component:
+
+- Increment the MAJOR version when you make incompatible API changes.
+- Increment the MINOR version when you add functionality in a backwards compatible manner.
+- Increment the PATCH version when you make backwards compatible bug fixes. (Source)
+
+> You should reset PATCH to 0 when you increment MINOR, and reset both PATCH and MINOR to 0 when you increment MAJOR.
+> 
+
+#### 4.5.2 Handle version with bumpver
+
+Often, you want to specify the version number in different files within your project. For example, the version number 
+is mentioned in both `pyproject.toml` and `stock_catcher/__init__.py`. To help you make sure that version 
+numbers stay consistent, you can use a tool like **BumpVer**.
+
+```shell
+# install the package
+pip install bumpver
+
+# create bumpver config in pyproject.toml
+bumpver init
+
+```
+
+The above command will generate the below lines in `pyproject.toml` file
+
+```toml
+[tool.bumpver]
+current_version = "0.0.1"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message  = "bump version {old_version} -> {new_version}"
+commit          = true
+tag             = true
+push            = false
+
+    [tool.bumpver.file_patterns]
+    "pyproject.toml" = [
+        'current_version = "{version}"',
+        'version = "{version}"',
+    ]
+    "src/stock_catcher/__init__.py" = ["{version}"]
+    "src/stock_catcher/__main__.py" = ["- stocke_catcher v{version}"]
+```
+
+If you want to update a minor version, you can do the following
+```shell
+bumpver update --minor
+```

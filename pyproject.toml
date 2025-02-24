@@ -27,7 +27,7 @@ requires-python = ">=3.9"
 
     [project.urls]
     repository    = "https://github.com/pengfei99/py-packaging"
-    documentation = "https://github.com/pengfei99/py-packaging"
+    documentation = "https://github.com/pengfei99/py-packaging/blob/main/docs/packaging_python_scripts.md"
 
 
 [tool.bumpver]
