@@ -394,6 +394,17 @@ when calling `pip-compile`:
 pip-compile --extra dev pyproject.toml
 ```
 
+After the `pip-compile`, a complete `requirements.txt` will be generated which contains all required packages citations.
+You can install these packages into your python virtual environment by using the below command
+
+```shell
+# sync will remove existing but not required package from the env
+pip-sync
+
+# install all required package without deleting existing package
+pip install -r requirements.txt
+```
+
 #### 4.2.3. Specify project entry point
 
 - **project.scripts**: creates command-line scripts that call functions within your package. 
