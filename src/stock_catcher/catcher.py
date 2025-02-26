@@ -1,3 +1,16 @@
+"""
+catcher
+===========
+
+This module provides functions to get the latest news of French stock.
+
+Author:
+    Pengfei liu
+
+Date:
+    2025-02-25
+"""
+
 # Standard library imports
 from importlib import resources
 from pathlib import Path
@@ -18,7 +31,9 @@ def get_stock_infos(
     This function takes a list of stock tickers and returns a Pandas DataFrame which contains the basic information of the stock.
     The stock ticker has the following format: <stock_id>.PA. For example: ALO.PA: Alstom, MC.PA: LVMH
     :param add_postfix: If this option is enabled, a postfix ".PA" will be added to the stock ticker. This is for the ticker without .PA such as ALO,
+    :type add_postfix: bool
     :param stock_tickers: A list of stock tickers
+    :type stock_tickers: List[str]
     :return:
     """
     # We don't need all information of a stock, below is a list of all important columns for me.
@@ -69,6 +84,7 @@ def get_stock_infos(
     # use symbol column as index
     pdf.set_index("symbol", inplace=True)
     return pdf
+
 
 
 def get_top_dividendYield_stock(stock_df, top_n: int = 20) -> pd.DataFrame:

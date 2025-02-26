@@ -210,9 +210,100 @@ Python follows [PEP 257](https://peps.python.org/pep-0257/) for docstrings.
 
 You can use docstrings to document `modules, classes, functions, and methods`.
 
+Docstrings has many different styles, such as :
+- Google Style, 
+- NumPy Style, 
+- reStructuredText
+
+Here, I use `reStructuredText`, because it's supported by `Sphinx` and `pypi`.
+
 #### 4.3.1 Module docstring
 
+In python, a `file.py is considered as a module` which can contain `one or more class`. It should contain a docstring,
+that describes its purpose. To do so, at the beginning of the Python file, add the below text
 
+```python
+"""
+catcher
+===========
+
+This module provides functions to get the latest news of French stock.
+
+Author:
+    Pengfei liu
+
+Date:
+    2025-02-25
+"""
+
+```
+#### 4.4.2 class docstring
+
+The class should have a class level docstring which contains the description of the class, the params for the constructor
+and the internal variables.
+
+In the below example, we have a class called `StockAnalyzer`, the constructor requires one parameter called `stock_ticker`
+, it contains one internal variable called `stock_ticker`.
+
+```python
+class StockAnalyzer:
+    """
+    Represents a stock analyzer in the system.
+
+    :param stock_ticker: The stock's unique identifier
+    :type stock_ticker: str
+       
+
+    :ivar stock_ticker: The stock's unique identifier
+    :vartype stock_ticker: str
+
+    """
+
+    ALLOW_TICKERS = ["ticker1", "ticker2"]
+    
+    def __init__(self, stock_ticker:str):
+        """
+        Initializes a stock analyzer instance.
+        :param stock_ticker: The stock's unique identifier
+        :type stock_ticker: str
+        """
+        self.stock_ticker = stock_ticker
+        
+```
+
+#### 4.3.3 Function/method docstring 
+
+The below example shows docstring of a method, it has input and output parameters. It also raises exception.
+
+```python
+    def get_stock_latest_price(self,start_date:str,end_date:str)->pd.DataFrame:
+        """
+        This function takes a stock ticker and returns a Pandas DataFrame which contains the latest price of the stock
+        within the given date range.
+        :param start_date: start date
+        :type start_date: str
+        :param end_date: end date
+        :type end_date: str
+        :return: a pandas dataframe containing the latest price of the stock
+        :rtype: pd.DataFrame
+        :raise ValueError: if stock ticker does not exist
+
+        :Example:
+
+        .. code-block:: python
+           stock_analyzer = StockAnalyzer("ticker1")
+           stock_analyzer.get_stock_latest_price(start_date="2020-01-01",end_date="2020-02-25")
+        """
+        result = pd.DataFrame()
+        if self.stock_ticker not in StockAnalyzer.ALLOW_TICKERS:
+            raise ValueError(f"The stock ticker {self.stock_ticker} is no longer valid.")
+        print(f"Getting latest price for stock ticker: {self.stock_ticker} with start date: {start_date} and end date: {end_date}")
+        return result
+```
+
+> You can find the complete example in `src/stock_catcher/analyzer.py`
+> 
+### 4.4 Generate a html documentation with Sphinx
 
 ## Appendix 
 
