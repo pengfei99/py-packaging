@@ -31,10 +31,8 @@ def get_stock_infos(
     This function takes a list of stock tickers and returns a Pandas DataFrame which contains the basic information of the stock.
     The stock ticker has the following format: <stock_id>.PA. For example: ALO.PA: Alstom, MC.PA: LVMH
     :param add_postfix: If this option is enabled, a postfix ".PA" will be added to the stock ticker. This is for the ticker without .PA such as ALO,
-    :type add_postfix: bool
     :param stock_tickers: A list of stock tickers
-    :type stock_tickers: List[str]
-    :return:
+    :return: a pandas DataFrame which contains the basic information of the stock
     """
     # We don't need all information of a stock, below is a list of all important columns for me.
     key_columns = [
@@ -90,8 +88,8 @@ def get_stock_infos(
 def get_top_dividendYield_stock(stock_df, top_n: int = 20) -> pd.DataFrame:
     """
     This function returns the top n dividendYield of a given stock.
-    :param stock_df:
-    :param top_n:
+    :param stock_df: a pandas DataFrame which contains the information about the stock
+    :param top_n: top n potential stock
     :return:
     """
     sortByDiv = stock_df.sort_values(by="dividendYield", ascending=False)
@@ -101,8 +99,8 @@ def get_top_dividendYield_stock(stock_df, top_n: int = 20) -> pd.DataFrame:
 def get_top_potential_stock(stock_df, top_n: int = 20) -> pd.DataFrame:
     """
     This function returns the top n potential stock of a given stock. We use the (last 52 week high - 50 day average price )/ 52 week high. If the number is positive we keep,
-    :param stock_df:
-    :param top_n:
+    :param stock_df: a pandas DataFrame which contains the information about the stock
+    :param top_n: top n potential stock
     :return:
     """
     stock_df["history_price_diff"] = (
@@ -115,8 +113,8 @@ def get_top_potential_stock(stock_df, top_n: int = 20) -> pd.DataFrame:
 def get_fr_stock_tickers(stock_source_path: Path) -> List:
     """
     This function reads a stock symbol file in csv, and returns a list of stock tickers.
-    :param stock_source_path: file path of a stock symbol file
-    :return:
+    :param stock_source_path: File path of a stock symbol file
+    :return: A list of stock tickers
     """
     if stock_source_path.is_file():
         stock_symbol_pdf = pd.read_csv(stock_source_path.as_posix(), sep=",")
@@ -131,7 +129,7 @@ def get_default_cac_file_path(cac_file_name: str = CAC40) -> Path:
     This function returns the default CAC40 file path. As we use the importlib.resources module, we no longer need to
     consider where this function will be called to get the correct default CAC40 file path. CAC40 is a package default
     variable defined in __init__.py
-    :param cac_file_name:
-    :return:
+    :param cac_file_name: the raw file name of the default CAC40 file
+    :return: The path of the cac40 ticker file
     """
     return Path(str(resources.files("stock_catcher.data") / f"{cac_file_name}"))

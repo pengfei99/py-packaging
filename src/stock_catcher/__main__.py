@@ -1,6 +1,8 @@
 import sys
 from stock_catcher.catcher import *
 
+from stock_catcher.analyzer import StockAnalyzer
+
 print("Executing __main__.py")
 
 def main():
@@ -23,6 +25,8 @@ def main():
     top_pot = get_top_potential_stock(stock_info_pdf)
     print(f"Top Dividend:\n{top_div}")
     print(f"Top potential:\n{top_pot}")
+    stock_analyzer = StockAnalyzer("ticker1")
+    stock_analyzer.get_stock_latest_price()
 
 if __name__ == "__main__":
     main()

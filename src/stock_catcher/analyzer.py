@@ -1,14 +1,6 @@
 """
-analyzer
-===========
-
 This module provides a class to analyze stock prices.
 
-Author:
-    Pengfei Liu
-
-Date:
-    2025-02-25
 """
 import pandas as pd
 
