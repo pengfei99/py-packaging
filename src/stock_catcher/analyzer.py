@@ -2,10 +2,10 @@
 analyzer
 ===========
 
-This module provides functions to analyze stock prices.
+This module provides a class to analyze stock prices.
 
 Author:
-    John Doe
+    Pengfei Liu
 
 Date:
     2025-02-25
@@ -50,7 +50,7 @@ class StockAnalyzer:
 
         :Example:
 
-        .. code-block:: python
+        . code-block:: python
            stock_analyzer = StockAnalyzer("ticker1")
            stock_analyzer.get_stock_latest_price(start_date="2020-01-01",end_date="2020-02-25")
         """
